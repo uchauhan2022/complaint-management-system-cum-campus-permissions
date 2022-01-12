@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="{{url_for('static', filename='dashboard/img/apple-icon.png')}}">
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='dashboard/img/favicon.png')}}">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+    Dashboard
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+    name='viewport' />
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <!-- CSS Files -->
+  <link href="{{url_for('static', filename='dashboard/css/bootstrap.min.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename='dashboard/css/now-ui-dashboard.css')}}" rel="stylesheet" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link href="{{url_for('static', filename='dashboard/demo/demo.css')}}" rel="stylesheet" />
+  <style>
+    .overlayx {
+      position: absolute;
+      bottom: 0;
+      background: rgb(0, 0, 0);
+      background: rgba(0, 0, 0, 0.603);
+      /* Black see-through */
+      color: #f1f1f1;
+      width: 100%;
+      transition: .5s ease;
+      opacity: 1;
+      color: white;
+      font-size: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+
+  .tabbable .nav-tabs {
+   overflow-x: auto;
+   overflow-y:hidden;
+   flex-wrap: nowrap;
+   display: flex;
+  }
+
+  @media screen and (max-width: 768px) {
+    .tabbable .nav-tabs {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .tab-pane .table {
+      display: block;
+    }
+  }
+  </style>
+</head>
+
+<body class="">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="red">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+    -->
+      <div class="logo">
+        <a href="" class="simple-text text-center">
+          Thapar University
+        </a>
+      </div>
+      <div class="sidebar-wrapper" id="sidebar-wrapper">
+        <ul class="nav">
+          <li>
+            <a href="{{url_for('hostel.dashboard')}}">
+              <i class="now-ui-icons design_app"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <li class="active">
+            <a href="{{url_for('hostel.hostelCMS')}}">
+              <i class="far fa-clipboard"></i>
+              <p>Hostel-Complaints</p>
+            </a>
+          </li>
+
+          <li class="">
+            <a href="{{url_for('hostel.lodgeComplaint')}}">
+              <i class="fas fa-tools"></i>
+              <p>Lodge A Complaint</p>
+            </a>
+          </li>
+          <li class="">
+            <a href="{{url_for('hostel.generateReport')}}">
+              <i class="fas fa-scroll"></i>
+              <p>Reports</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{url_for('hostel.userProfile')}}">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>User Profile</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel" id="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="#">Hello <b>{{user[3]}} {{user[4]}}!</b>
+            </a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+            aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end" id="navigation">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="navbar-brand" href="{{url_for('hostel.logout')}}">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <p>
+                    &nbsp;logout
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="panel-header panel-header-lg">
+        <h2 align="center" class="d-sm-block" style="color:white;">HOSTEL COMPLAINT MANAGEMENT SYSTEM</h2>
+        <div class="container">
+          {% if appStatus == "Error" %}
+          <div align="center" style="font-weight: 600;" class="alert alert-danger" role="alert">
+            Some Error Occurred!
+          </div>
+          {% endif %}
+          {% if appStatus != 0 and appStatus != "Error" %}
+          <div align="center" style="background-color: #33bd2c;font-weight: 600;" class="alert alert-success" role="alert">
+            {{appStatus}}!
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="content" style="margin-top: -90px;">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card" style="position:relative; height: 900px; overflow:auto; display:block;">
+              <div class="container" style="max-width:1700px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <nav>
+                          <div class="tabbable">
+                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#new-complaints" role="tab" aria-controls="nav-home" aria-selected="true">Pending Complaints</a>
+                                <a class="nav-item nav-link " id="nav-profile-tab" data-toggle="tab" href="#active-complaints" role="tab" aria-controls="nav-profile" aria-selected="false">Active Complaints</a>
+                                <a class="nav-item nav-link" id="nav-resolved-tab" data-toggle="tab" href="#resolved-complaints" role="tab" aria-controls="nav-resolved" aria-selected="false">Resolved Complaints</a>
+                                <a class="nav-item nav-link" id="nav-rejected-tab" data-toggle="tab" href="#rejected-complaints" role="tab" aria-controls="nav-rejected" aria-selected="false">Rejected Complaints</a>
+                            </div>
+                          </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="new-complaints" role="tabpanel" aria-labelledby="nav-home-tab">
+                              <p style="margin-top: 15px;">Type something in the input field to search the table:</p>
+                              <input class="form-control" id="myInput1" type="text" placeholder="Search..">
+                              <div style="height: 800px;">
+                                <table class="table"  style="overflow:auto;">
+                                    <thead class="text-primary">
+                                        <tr>
+                                          <th>
+                                            Type of complaint
+                                          </th>
+                                          <th>
+                                            Subject
+                                          </th>
+                                          <th>
+                                            Student Name
+                                          </th>
+                                          <th>
+                                            Student Roll No.
+                                          </th>
+                                          <th>
+                                            Room Number
+                                          </th>
+                                          <th class="text-right">
+                                            Status
+                                          </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myTable1">
+                                      {% for complaints in pendingComplaints  %}
+                                      {% if complaints[18] == 1 %}
+                                      <tr style="background-color: #ff363645;">
+                                      {% else %}
+                                      <tr>
+                                      {%endif%}
+                                        <td>
+                                          {{complaints[3]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[4]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[22]}} {{complaints[23]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[21]}}
+                                        </td>
+                                        <td>
+                                          {{roomDict[complaints[2]]}}
+                                          <div class="modal fade" id='complaintsModal{{complaints[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLongTitle">Actions</h5>
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <div data-spy="scroll">
+                                                    <nav>
+                                                      <div class="tabbable">
+                                                      <div class="nav nav-tabs nav-fill" id="nav-tab{{complaints[0]}}" role="tablist">
+                                                          <a class="nav-item nav-link" id="nav-home-tab{{complaints[0]}}" data-toggle="tab" href="#description{{complaints[0]}}" role="tab" aria-controls="nav-home" aria-selected="true">Description</a>
+                                                          <a class="nav-item nav-link active" id="nav-home2-tab{{complaints[0]}}" data-toggle="tab" href="#actions{{complaints[0]}}" role="tab" aria-controls="nav-home" aria-selected="true">Accept/Reject</a>
+                                                      </div>
+                                                      </div>
+                                                    </nav>
+                                                    <div class="tab-content" id="nav-tabContent{{complaints[0]}}">
+                                                      <div class="tab-pane fade show  " id="description{{complaints[0]}}" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                        <table class="table">
+                                                          <tbody>
+                                                            <tr>
+                                                              <td>Complaint ID:</td>
+                                                              <td class="text-right">{{complaints[0]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Type:</td>
+                                                              <td class="text-right">{{complaints[3]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Subject:</td>
+                                                              <td class="text-right">{{complaints[4]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Description:</td>
+                                                              <td class="text-right">{{complaints[5]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Time:</td>
+                                                              <td class="text-right">{{complaints[6]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Date:</td>
+                                                              <td class="text-right">{{complaints[13]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Student Name:</td>
+                                                              <td class="text-right">{{complaints[22]}} {{complaints[23]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Student Roll Number:</td>
+                                                              <td class="text-right">{{complaints[21]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Room Number:</td>
+                                                              <td class="text-right">{{roomDict[complaints[2]]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Contact Number:</td>
+                                                              <td class="text-right">{{complaints[24]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Image:</td>
+                                                              {% if complaints[11] == "1" %}
+                                                              <td class="text-right">Unavailable </td>
+                                                              {% else %}
+                                                              <td class="text-right"><a href="/{{complaints[11]}}" target="_blank">Click to view</a></td>
+                                                              {%endif%}
+                                                            </tr>
+                                                          </tbody>
+                                                        </table>
+                                                      </div>
+                                                      <div class="tab-pane fade show active  " id="actions{{complaints[0]}}" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                        <form action="{{url_for('hostel.hostelCMS')}}" method="POST">
+                                                          <div class="row">
+                                                            <div class="col-md-12">
+                                                              <div class="form-group">
+                                                                <label>Update</label>
+                                                                <textarea class="form-control" name="update" id="exampleFormControlTextarea1" placeholder="Please add an update" rows="3" required></textarea>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                          <div class="card-footer text-center">
+                                                            <button type="submit" class="btn btn-success btn-small float-right" style="background-color: #b42020; margin-right: 5px;" name="submit" value="rejected:{{complaints[0]}}">Discard</button>
+                                                            <button type="submit" class="btn btn-success btn-small float-right" style="background-color: #df7f01; margin-right: 5px;" name="submit" value="inhouse:{{complaints[0]}}">Handled in-house</button>
+                                                            <button type="submit" class="btn btn-success btn-small float-right" style="background-color: #1d9839;margin-right: 5px;"name="submit"  value="accepted:{{complaints[0]}}">Approve</button>
+                                                          </div>
+                                                        </form>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td class="text-right">  
+                                          <a href="#" data-target='#complaintsModal{{complaints[0]}}' data-toggle="modal">
+                                            {% if complaints[7]==0%} 
+                                            Submited to Hostel Authorities
+                                            {%endif%}
+                                          </a>
+                                        </td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                <form action="{{url_for('hostel.hostelCMS')}}" method="POST">
+                                  <div class="card-footer clearfix" style="padding: 0.75rem 1.25rem;">
+                                    <button type="submit" class="btn btn-success btn-small float-right"
+                                      style="background-color: #1d9839;margin-right: 5px;"name="submit" onclick="confirmApprove()" value="markAllApproved">Approve All</button>
+                                  </div>
+                                </form>
+                                </table>
+                              </div>
+                            </div>
+                            <div class="tab-pane fade show " id="active-complaints" role="tabpanel" aria-labelledby="nav-home-tab">
+                              <p style="margin-top: 15px;">Type something in the input field to search the table:</p>
+                              <input class="form-control" id="myInput2" type="text" placeholder="Search..">
+                                <table class="table" style="overflow:auto;">
+                                    <thead class="text-primary">
+                                        <tr>
+                                          <th>
+                                            Type of complaint
+                                          </th>
+                                          <th>
+                                            Date Of Complaint
+                                          </th>
+                                          <th>
+                                            Student Name
+                                          </th>
+                                          <th>
+                                            Subject
+                                          </th>
+                                          <th>
+                                            Room Number
+                                          </th>
+                                          <th class="text-right">
+                                            Status
+                                          </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myTable2">
+                                      {% for complaints in activeComplaints  %}
+                                      <tr>
+                                        <td>
+                                          {{complaints[3]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[13]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[22]}} {{complaints[23]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[4]}}
+                                        </td>
+                                        <td>
+                                          {{roomDict[complaints[2]]}}
+                                          <div class="modal fade" id='complaintsModal{{complaints[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLongTitle">Actions</h5>
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <div data-spy="scroll">
+                                                    <nav>
+                                                      <div class="tabbable">
+                                                      <div class="nav nav-tabs nav-fill" id="nav-tab{{complaints[0]}}" role="tablist">
+                                                          <a class="nav-item nav-link" id="nav-home-tab{{complaints[0]}}" data-toggle="tab" href="#description{{complaints[0]}}" role="tab" aria-controls="nav-home" aria-selected="true">Description</a>
+                                                          <a class="nav-item nav-link" id="nav-profile-tab{{complaints[0]}}" data-toggle="tab" href="#updates{{complaints[0]}}" role="tab" aria-controls="nav-profile" aria-selected="false">Updates</a>
+                                                          <a class="nav-item nav-link active" id="nav-home2-tab{{complaints[0]}}" data-toggle="tab" href="#actions{{complaints[0]}}" role="tab" aria-controls="nav-home" aria-selected="true">Send Update</a>
+                                                      </div>
+                                                      </div>
+                                                    </nav>
+                                                    <div class="tab-content" id="nav-tabContent{{complaints[0]}}">
+                                                      <div class="tab-pane fade show  " id="description{{complaints[0]}}" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                        <table class="table">
+                                                          <tbody>
+                                                            <tr>
+                                                              <td>Complaint ID:</td>
+                                                              <td class="text-right">{{complaints[0]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Type:</td>
+                                                              <td class="text-right">{{complaints[3]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Subject:</td>
+                                                              <td class="text-right">{{complaints[4]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Description:</td>
+                                                              <td class="text-right">{{complaints[5]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Time:</td>
+                                                              <td class="text-right">{{complaints[6]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Date:</td>
+                                                              <td class="text-right">{{complaints[13]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Student Name:</td>
+                                                              <td class="text-right">{{complaints[22]}} {{complaints[23]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Student Roll Number:</td>
+                                                              <td class="text-right">{{complaints[21]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Room Number:</td>
+                                                              <td class="text-right">{{roomDict[complaints[2]]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td> Contact Number:</td>
+                                                              <td class="text-right">{{complaints[24]}}</td>
+                                                            <tr>
+                                                              <td>Worker Name:</td>
+                                                              <td class="text-right">{{complaints[19]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Worker Contact Number:</td>
+                                                              <td class="text-right">{{complaints[20]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Image:</td>
+                                                              {% if complaints[11] == "1" %}
+                                                              <td class="text-right">Unavailable </td>
+                                                              {% else %}
+                                                              <td class="text-right"><a href="/{{complaints[11]}}" target="_blank">Click to view</a></td>
+                                                              {%endif%}
+                                                            </tr>
+                                                          </tbody>
+                                                        </table>
+                                                      </div>
+                                                      <div class="tab-pane fade show" id="updates{{complaints[0]}}" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                        <table class="table" >
+                                                          <thead class="text-primary">
+                                                              <tr>
+                                                                <th>
+                                                                  Time
+                                                                </th>
+                                                                <th class="text-right">
+                                                                  Update
+                                                                </th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tbody>
+                                                            {% for update in activeUpdates if update[1]==complaints[0] %}
+                                                              <tr>
+                                                                <td>
+                                                                  {{update[2]}}
+                                                                </td>
+                                                                <td class="text-right">
+                                                                  {{update[3]}}
+                                                                </td>
+                                                              </tr>
+                                                            {%endfor%}
+                                                          </tbody>
+                                                        </table>
+                                                      </div>
+                                                      <div class="tab-pane fade show active  " id="actions{{complaints[0]}}" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                        <form action="{{url_for('hostel.hostelCMS')}}" method="POST">
+                                                          <div class="row">
+                                                            <div class="col-md-12">
+                                                              <div class="form-group">
+                                                                <label>Update</label>
+                                                                <textarea class="form-control" name="update" id="exampleFormControlTextarea1" placeholder="Add a new update" rows="3" required></textarea>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                          <div class="card-footer text-center">
+                                                            {% if complaints[7]==4 %}
+                                                            <button type="submit" class="btn btn-success btn-small float-right" style="background-color: #1d9839;margin-right: 5px;"name="submit"  value="markCompleted:{{complaints[0]}}">Mark Completed</button>
+                                                            {% endif %}
+                                                            {% if complaints[7]==2 %}
+                                                            <button type="submit" class="btn btn-success btn-small float-right" style="background-color: #1d9839;margin-right: 5px;"name="submit"  value="markCompleted:{{complaints[0]}}">Mark Completed</button>
+                                                            {% endif %}
+                                                            {% if complaints[7]==3 %}
+                                                            <button type="submit" class="btn btn-danger btn-small float-right" style="background-color: #a20303;margin-right: 5px;"name="submit"  value="rejected:{{complaints[0]}}">Discard Complaint</button>
+                                                            {%endif%}
+                                                            <button type="submit" class="btn btn-success btn-small float-right" style="background-color: #1d9839;margin-right: 5px;"name="submit"  value="update:{{complaints[0]}}">Post Update</button>
+                                                          </div>
+                                                        </form>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td class="text-right">  
+                                          <a href="#" data-target='#complaintsModal{{complaints[0]}}' data-toggle="modal">
+                                            {% if complaints[7]==3%} 
+                                            Being Handled at CMS
+                                            {%endif%}
+                                            {% if complaints[7]==4%}
+                                            Alloted to a worker
+                                            {%endif%}
+                                            {% if complaints[7]==2%}
+                                            Being Handled by in-house workers
+                                            {%endif%}
+                                          </a>
+                                        </td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="resolved-complaints" role="tabpanel" aria-labelledby="nav-resolved-tab">
+                              <p style="margin-top: 15px;">Type something in the input field to search the table:</p>
+                              <input class="form-control" id="myInput4" type="text" placeholder="Search..">
+                                <table class="table" style="overflow:auto;">
+                                    <thead class="text-primary">
+                                        <tr>
+                                          <th>
+                                            Type of complaint
+                                          </th>
+                                          <th>
+                                            Subject
+                                          </th>
+                                          <th>
+                                            Student Name
+                                          </th>
+                                          <th>
+                                            Student Roll No.
+                                          </th>
+                                          <th>
+                                            Room Number
+                                          </th>
+                                          <th class="text-right">
+                                            Status
+                                          </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myTable4">
+                                      {% for complaints in resolvedComplaints  %}
+                                      <tr>
+                                        <td>
+                                          {{complaints[3]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[4]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[22]}} {{complaints[23]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[21]}}
+                                        </td>
+                                        <td>
+                                          {{roomDict[complaints[2]]}}
+                                          <div class="modal fade" id='complaintsModal{{complaints[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLongTitle">Actions</h5>
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <div data-spy="scroll">
+                                                        <table class="table">
+                                                          <tbody>
+                                                            <tr>
+                                                              <td>Complaint ID:</td>
+                                                              <td class="text-right">{{complaints[0]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Type:</td>
+                                                              <td class="text-right">{{complaints[3]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Subject:</td>
+                                                              <td class="text-right">{{complaints[4]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Description:</td>
+                                                              <td class="text-right">{{complaints[5]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Time:</td>
+                                                              <td class="text-right">{{complaints[6]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Date:</td>
+                                                              <td class="text-right">{{complaints[13]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Student Name:</td>
+                                                              <td class="text-right">{{complaints[22]}} {{complaints[23]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Student Roll Number:</td>
+                                                              <td class="text-right">{{complaints[21]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Room Number:</td>
+                                                              <td class="text-right">{{roomDict[complaints[2]]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Contact Number:</td>
+                                                              <td class="text-right">{{complaints[24]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Date Completed:</td>
+                                                              <td class="text-right">{{complaints[15]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Feedback:</td>
+                                                              <td class="text-right">{{complaints[12]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Worker Name:</td>
+                                                              <td class="text-right">{{complaints[19]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Worker Contact Number:</td>
+                                                              <td class="text-right">{{complaints[20]}}</td>
+                                                            </tr>
+                                                          </tbody>
+                                                        </table>
+                                                      </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td class="text-right">  
+                                          <a href="#" data-target='#complaintsModal{{complaints[0]}}' data-toggle="modal">
+                                            {% if complaints[7]==1%} 
+                                            Discarded by Hostel Authorities
+                                            {%endif%}
+                                            {% if complaints[7]==6  and complaints[17]==1 %}
+                                            Approved by Student (in-house)
+                                            {%endif%}
+                                            {% if complaints[7]==7  and complaints[17]==1 %}
+                                            Auto Approved by system (in-house)
+                                            {%endif%}
+                                            {% if complaints[7]==5  and complaints[17]==1 %}
+                                            Marked Completed, awaiting student approval. (in-house)
+                                            {%endif%}
+                                            {% if complaints[7]==6 and complaints[17]==0 %}
+                                            Approved by Student
+                                            {%endif%}
+                                            {% if complaints[7]==7 and complaints[17]==0 %}
+                                            Auto Approved by system
+                                            {%endif%}
+                                            {% if complaints[7]==5 and complaints[17]==0 %}
+                                            Marked Completed, awaiting student approval.
+                                            {%endif%}
+                                          </a>
+                                        </td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="rejected-complaints" role="tabpanel" aria-labelledby="nav-rejected-tab">
+                              <p style="margin-top: 15px;">Type something in the input field to search the table:</p>
+                              <input class="form-control" id="myInput5" type="text" placeholder="Search..">
+                                <table class="table" style="overflow:auto;">
+                                    <thead class="text-primary">
+                                        <tr>
+                                          <th>
+                                            Type of complaint
+                                          </th>
+                                          <th>
+                                            Subject
+                                          </th>
+                                          <th>
+                                            Student Name
+                                          </th>
+                                          <th>
+                                            Student Roll No.
+                                          </th>
+                                          <th>
+                                            Room Number
+                                          </th>
+                                          <th class="text-right">
+                                            Status
+                                          </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myTable5">
+                                      {% for complaints in rejectedComplaints  %}
+                                      <tr>
+                                        <td>
+                                          {{complaints[3]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[4]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[22]}} {{complaints[23]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[21]}}
+                                        </td>
+                                        <td>
+                                          {{roomDict[complaints[2]]}}
+                                          <div class="modal fade" id='complaintsModal{{complaints[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLongTitle">Actions</h5>
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <div data-spy="scroll">
+                                                        <table class="table">
+                                                          <tbody>
+                                                            <tr>
+                                                              <td>Complaint ID:</td>
+                                                              <td class="text-right">{{complaints[0]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Type:</td>
+                                                              <td class="text-right">{{complaints[3]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Subject:</td>
+                                                              <td class="text-right">{{complaints[4]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Description:</td>
+                                                              <td class="text-right">{{complaints[5]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Time:</td>
+                                                              <td class="text-right">{{complaints[6]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Complaint Date:</td>
+                                                              <td class="text-right">{{complaints[13]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Student Name:</td>
+                                                              <td class="text-right">{{complaints[22]}} {{complaints[23]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Student Roll Number:</td>
+                                                              <td class="text-right">{{complaints[21]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Room Number:</td>
+                                                              <td class="text-right">{{roomDict[complaints[2]]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Contact Number:</td>
+                                                              <td class="text-right">{{complaints[24]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Date Completed:</td>
+                                                              <td class="text-right">{{complaints[15]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Feedback:</td>
+                                                              <td class="text-right">{{complaints[12]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Worker Name:</td>
+                                                              <td class="text-right">{{complaints[19]}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td>Worker Contact Number:</td>
+                                                              <td class="text-right">{{complaints[20]}}</td>
+                                                            </tr>
+                                                          </tbody>
+                                                        </table>
+                                                      </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td class="text-right">  
+                                          <a href="#" data-target='#complaintsModal{{complaints[0]}}' data-toggle="modal">
+                                            {% if complaints[7]==1%} 
+                                            Discarded by Hostel Authorities
+                                            {%endif%}
+                                            {% if complaints[7]==6  and complaints[17]==1 %}
+                                            Approved by Student (in-house)
+                                            {%endif%}
+                                            {% if complaints[7]==7  and complaints[17]==1 %}
+                                            Auto Approved by system (in-house)
+                                            {%endif%}
+                                            {% if complaints[7]==5  and complaints[17]==1 %}
+                                            Marked Completed, awaiting student approval. (in-house)
+                                            {%endif%}
+                                            {% if complaints[7]==6 and complaints[17]==0 %}
+                                            Approved by Student
+                                            {%endif%}
+                                            {% if complaints[7]==7 and complaints[17]==0 %}
+                                            Auto Approved by system
+                                            {%endif%}
+                                            {% if complaints[7]==5 and complaints[17]==0 %}
+                                            Marked Completed, awaiting student approval.
+                                            {%endif%}
+                                          </a>
+                                        </td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{{url_for('static', filename='dashboard/js/core/jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/core/popper.min.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/core/bootstrap.min.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/plugins/perfect-scrollbar.jquery.min.js')}}"></script>
+  <!--  Google Maps Plugin    -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+  <!-- Chart JS -->
+  <script src="{{url_for('static', filename='dashboard/js/plugins/chartjs.min.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-datepicker.js')}}"></script>
+  <!--  Notifications Plugin    -->
+  <!--  Notifications Plugin    -->
+  <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-notify.js')}}"></script>
+  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{{url_for('static', filename='dashboard/js/now-ui-dashboard.min.js')}}" type="text/javascript"></script>
+  <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
+  <script src="{{url_for('static', filename='dashboard/demo/demo.js')}}"></script>
+  <script>
+    $(document).ready(function () {
+      // Javascript method's body can be found in static/dashboard/js/demos.js
+      demo.initDashboardPageCharts();
+
+    });
+
+  </script>
+  <script>
+    function confirmApprove() {
+      confirm("Press OK to approve all pending approvals.");
+    }
+    </script>
+  <script>
+    $(document).ready(function () {
+      $("#myInput1").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable1 tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    $(document).ready(function () {
+      $("#myInput2").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable2 tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    $(document).ready(function () {
+      $("#myInput3").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable3 tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    $(document).ready(function () {
+      $("#myInput4").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable4 tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    $(document).ready(function () {
+      $("#myInput5").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable5 tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    jQuery(function ($) {
+      $('body').on('click', '#selectAll', function () {
+        $('.form-check-input').prop('checked', this.checked);
+      });
+
+      $('body').on('click', '.form-check-input', function () {
+        if ($('.form-check-input').length == $('.form-check-input:checked').length) {
+          $('#selectAll').prop('checked', true);
+        } else {
+          $("#selectAll").prop('checked', false);
+        }
+
+      });
+    });
+  </script>
+</body>
+
+</html>

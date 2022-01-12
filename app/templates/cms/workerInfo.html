@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="{{url_for('static', filename='dashboard/img/apple-icon.png')}}">
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='dashboard/img/favicon.png')}}">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+    Dashboard
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <!-- CSS Files -->
+  <link href="{{url_for('static', filename='dashboard/css/bootstrap.min.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename='dashboard/css/now-ui-dashboard.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename='dashboard/css/datetime.min.css')}}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css" integrity="sha512-TQQ3J4WkE/rwojNFo6OJdyu6G8Xe9z8rMrlF9y7xpFbQfW5g8aSWcygCQ4vqRiJqFsDsE1T6MoAOMJkFXlrI9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link href="{{url_for('static', filename='dashboard/demo/demo.css')}}" rel="stylesheet" />
+  <style>
+    .overlayx {
+    position: absolute;
+    bottom: 0;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.603); /* Black see-through */
+    color: #f1f1f1;
+    width: 100%;
+    transition: .5s ease;
+    opacity:1;
+    color: white;
+    font-size: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+
+    </style>
+</head>
+
+<body class="">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="red">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+    -->
+      <div class="logo">
+        <a href="" class="simple-text text-center">
+          Thapar University
+        </a>
+      </div>
+      <div class="sidebar-wrapper" id="sidebar-wrapper">
+        <ul class="nav">
+          <li class="">
+            <a href="{{url_for('cms.userProfile')}}">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>User Profile</p>
+            </a>
+          </li>
+          <li class="">
+            <a href="{{url_for('cms.dashboard')}}">
+              <i class="now-ui-icons design_app"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+           <li class="active">
+            <a href="{{url_for('cms.workers')}}">
+              <i class="now-ui-icons design_app"></i>
+              <p>Worker Info</p>
+            </a>
+          </li>
+          <li class="">
+            <a href="{{url_for('cms.generateReport')}}">
+              <i class="fas fa-scroll"></i>
+              <p>Reports</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel" id="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="#">Hello, {{user[0][2]}}!</a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end" id="navigation">
+           
+            <ul class="navbar-nav">
+              <!-- <li class="nav-item">
+                <a class="nav-link" href="#pablo">
+                  <i class="now-ui-icons media-2_sound-wave"></i>
+                  <p>
+                    <span class="d-lg-none d-md-block">Stats</span>
+                  </p>
+                </a>
+              </li> -->
+              <!-- <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="now-ui-icons location_world"></i>
+                  <p>
+                    <span class="d-lg-none d-md-block">Some Actions</span>
+                  </p>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li> -->
+              <li class="nav-item">
+                <a class="navbar-brand" href="{{url_for('main.logout')}}">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <p>
+                    &nbsp;logout
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="panel-header panel-header-lg">
+        <h2 align="center" class="d-sm-block" style="color:white; margin-left: 2rem;">WELCOME TO HOSTEL COMPLAINT MANAGEMENT SYSTEM</h2>
+        <div class="container">
+          
+
+        </div>
+
+      </div>
+      <div class="content">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="card" style="position:relative; display:block;">
+              <div class="card-header">
+                <h5 class="title">Add New Worker</h5>
+              </div>
+              <div class="card-body" >
+                <form method="POST" action="{{url_for('main.studentCMS')}}" >
+                  <div class="alert alert-info" role="alert">
+                   	For technical complaints, visit <a href="https://eticket.thapar.edu/">e-tickets online support</a>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>Worker Name</label>
+                        <input type="text" class="form-control" disabled="" placeholder= "Name" value="{{hostelName}}">
+                      </div>
+                    </div>
+                    <div class="col-md-5 px-1">
+                      <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="text" class="form-control" disabled="" placeholder="Contact Number" value="{{roomNo}}">
+                      </div>
+                    </div>
+                    <div class="col-md-5 px-1">
+                      <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" class="form-control" disabled="" placeholder="Contact Number" value="{{roomNo}}">
+                      </div>
+                    </div>
+                    <div class="col-md-5 px-1">
+                      <div class="form-group">
+                        <label>UPLOAD PICTURE</label>
+                        <input type="text" class="form-control" disabled="" placeholder="Contact Number" value="{{roomNo}}">
+                      </div>
+                    </div>
+                    <!-- <div class="col-md-4 pl-1">
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" placeholder="Email">
+                      </div>
+                    </div> -->
+                  </div>
+                  <div class="row">
+                    <div class="col-md-11 pr-1">
+                      <div class="form-group">
+                        <label>Department</label>
+                        <select class="form-select form-control" aria-label="Default select example" name="type-of-complaint" required>
+                          <option value="" selected>Select Depart</option>
+                          <option value="Electrical">Electrical</option>
+                          <option value="Plumber Related">Plumber Related</option>
+                          <option value="RO/Water Cooler Related">RO/Water Cooler Related</option>
+                          <option value="Fungus">Fungus</option>
+                          <option value="Furniture/Carpenter">Furniture/Carpenter</option>
+                          <option value="Other">Other</option>
+                        </select>
+                        <!-- <input type="text" class="form-control" placeholder="Company" value="Mike"> -->
+                      </div>
+                    </div>
+                    <!-- <div class="col-md-6 pl-1">
+                      <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" placeholder="Last Name" value="Andrew">
+                      </div>
+                    </div> -->
+                  </div>
+             <!-- problem ho skati hai  -->
+                  </div>
+                  <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary btn-round btn-lg btn-block" name="submit" value="submitComplaint"> Submit Request </button>
+                    <div class="pull-right">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-7">
+            <div class="card" style="position:relative; height: 775px; overflow:auto; display:block;">
+              <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <nav>
+                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#active-complaints" role="tab" aria-controls="nav-home" aria-selected="true">Active Complaints</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#verify" role="tab" aria-controls="nav-profile" aria-selected="false">Pending Approvals</a>
+                                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#previous" role="tab" aria-controls="nav-contact" aria-selected="false">Previous Complaints</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="active-complaints" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <table class="table" >
+                                    <thead class="text-primary">
+                                        <tr>
+                                          <th>
+                                            Worker ID
+                                          </th>
+                                          <th>
+                                            Worker Name
+                                          </th>
+                                          <th class="text-right">
+                                            Contact Number
+                                          </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for complaints in activeComplaints[::-1]  %}
+                                      <tr>
+                                        <td>
+                                          {{complaints[3]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[4]}}
+                                        </td>
+                                        <td class="text-right">  
+                                          <a href="#" data-target='#complaintsModal{{complaints[0]}}' data-toggle="modal">
+                                            {% if complaints[7]==0%} 
+                                            Submited to caretaker
+                                            {%endif%}
+                                            {% if complaints[7]==1%}
+                                            Discarded By Hostel Authorities
+                                            {%endif%}
+                                            {% if complaints[7]==2%}
+                                            Being handled by in-house employees
+                                            {%endif%}
+                                            {% if complaints[7]==3%}
+                                            Being handled at CMS
+                                            {%endif%}
+                                            {% if complaints[7]==4%}
+                                            Alloted to worker. More Details.
+                                            {%endif%}
+                                            {% if complaints[7]==5%}
+                                            Marked completed by Hostel Authorities
+                                            {%endif%}
+                                            {% if complaints[7]==6%}
+                                            Complaint completion approved
+                                            {%endif%}
+                                            {% if complaints[7]==7%}
+                                            Complaint completion auto approved
+                                            {%endif%}
+                                          </a>
+                                        </td>
+                                      </tr>
+                                      <div class="modal fade" id='complaintsModal{{complaints[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLongTitle">Actions and Notifications</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <div data-spy="scroll">
+                                                <h4 id="date">Date and Time of Lodging Complaint</h4>
+                                                <p>{{complaints[6]}}</p>
+                                                <h4 id="description">Complaint Description</h4>
+                                                <p>{{complaints[4]}}</p>
+                                                <h4 id="updates">Updates</h4>
+                                                <p>{{complaints[7]}}</p>
+                                              </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <form method="POST" action="{{url_for('main.studentCMS')}}">
+                                                <label style="margin:auto;">
+                                                  Do you want to delete this complaint?
+                                                </label>
+                                              <button type="submit" name="submit" class="btn deleteComplaint btn-danger" value="deleteComplaint:{{complaints[0]}}" >Delete Complaint</button>
+                                              </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="verify" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                <table class="table" cellspacing="0">
+                                  <thead class=" text-primary ">
+                                    <th>
+                                      Type of complaint
+                                    </th>
+                                    <th>
+                                      Subject
+                                    </th>
+                                    <th class="text-right">
+                                      Status
+                                    </th>
+                                  </thead>
+                                    <tbody>
+                                      {% for complaints in verifyComplaints[::-1]  %}
+                                      <tr>
+                                        <td>
+                                          {{complaints[3]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[4]}}
+                                        </td>
+                                        <td class="text-right">  
+                                          <a href="#" data-target='#complaintsModal{{complaints[0]}}' data-toggle="modal">
+                                            {% if complaints[7]==0%} 
+                                            Submited to caretaker
+                                            {%endif%}
+                                            {% if complaints[7]==1%}
+                                            Discarded By Hostel Authorities
+                                            {%endif%}
+                                            {% if complaints[7]==2%}
+                                            Being handled by in-house employees
+                                            {%endif%}
+                                            {% if complaints[7]==3%}
+                                            Being handled at CMS
+                                            {%endif%}
+                                            {% if complaints[7]==4%}
+                                            Alloted to *Insert name of worker*
+                                            {%endif%}
+                                            {% if complaints[7]==5%}
+                                            Marked completed by Hostel Authorities
+                                            {%endif%}
+                                            {% if complaints[7]==6%}
+                                            Complaint completion approved
+                                            {%endif%}
+                                            {% if complaints[7]==7%}
+                                            Complaint completion auto approved
+                                            {%endif%}
+                                          </a>
+                                        </td>
+                                      </tr>
+                                      <div class="modal fade" id='complaintsModal{{complaints[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLongTitle">Actions and Notifications</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <div data-spy="scroll">
+                                                <h4 id="date">Date and Time of Lodging Complaint</h4>
+                                                <p>{{complaints[6]}}</p>
+                                                <h4 id="description">Complaint Description</h4>
+                                                <p>{{complaints[4]}}</p>
+                                                <h4 id="updates">Updates</h4>
+                                                <p>{{complaints[7]}}</p>
+                                              </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <form method="POST" action="{{url_for('main.studentCMS')}}">
+                                                <label style="margin:auto;">
+                                                  Do you want to delete this complaint?
+                                                </label>
+                                              <button type="submit" name="submit" class="btn deleteComplaint btn-danger" value="deleteComplaint:{{complaints[0]}}" >Delete Complaint</button>
+                                              </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="previous" role="tabpanel" aria-labelledby="nav-contact-tab">
+                                <table class="table" cellspacing="0">
+                                  <thead class=" text-primary ">
+                                    <th>
+                                      Type of complaint
+                                    </th>
+                                    <th>
+                                      Subject
+                                    </th>
+                                    <th class="text-right">
+                                      Status
+                                    </th>
+                                  </thead>
+                                    <tbody>
+                                      {% for complaints in pastComplaints[::-1]  %}
+                                      <tr>
+                                        <td>
+                                          {{complaints[3]}}
+                                        </td>
+                                        <td>
+                                          {{complaints[4]}}
+                                        </td>
+                                        <td class="text-right">  
+                                          <a href="#" data-target='#complaintsModal{{complaints[0]}}' data-toggle="modal">
+                                            {% if complaints[7]==0%} 
+                                            Submited to caretaker
+                                            {%endif%}
+                                            {% if complaints[7]==1%}
+                                            Discarded By Hostel Authorities
+                                            {%endif%}
+                                            {% if complaints[7]==2%}
+                                            Being handled by in-house employees
+                                            {%endif%}
+                                            {% if complaints[7]==3%}
+                                            Being handled at CMS
+                                            {%endif%}
+                                            {% if complaints[7]==4%}
+                                            Alloted to *Insert name of worker*
+                                            {%endif%}
+                                            {% if complaints[7]==5%}
+                                            Marked completed by Hostel Authorities
+                                            {%endif%}
+                                            {% if complaints[7]==6%}
+                                            Complaint completion approved
+                                            {%endif%}
+                                            {% if complaints[7]==7%}
+                                            Complaint completion auto approved
+                                            {%endif%}
+                                          </a>
+                                        </td>
+                                      </tr>
+                                      <div class="modal fade" id='complaintsModal{{complaints[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLongTitle">Actions and Notifications</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <div data-spy="scroll">
+                                                <h4 id="date">Date and Time of Lodging Complaint</h4>
+                                                <p>{{complaints[6]}}</p>
+                                                <h4 id="description">Complaint Description</h4>
+                                                <p>{{complaints[4]}}</p>
+                                                <h4 id="updates">Updates</h4>
+                                                <p>{{complaints[7]}}</p>
+                                              </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <form method="POST" action="{{url_for('main.studentCMS')}}">
+                                                <label style="margin:auto;">
+                                                  Do you want to delete this complaint?
+                                                </label>
+                                              <button type="submit" name="submit" class="btn deleteComplaint btn-danger" value="deleteComplaint:{{complaints[0]}}" >Delete Complaint</button>
+                                              </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <!-- <div class="card-header">
+                <h5 class="title"> Previously Lodged Complaints</h5>
+              </div>
+              <div class="card-body" >
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class=" text-primary ">
+                      <th>
+                        ComplaintID
+                      </th>
+                      <th>
+                        Type
+                      </th>
+                      <th>
+                        Status
+                      </th>
+                      
+                    </thead>
+                    <tbody>
+                      {% for complaints in pastComplaints[::-1] %}
+                      <tr>
+                        <td>
+                          {{complaints[0]}}
+                        </td>
+                        <td>
+                          {{complaints[3]}}
+                        </td>
+                        <td>
+                          <a href="#" data-target='#complaintsModal{{complaints[0]}}' data-toggle="modal">
+                            {% if complaints[7]==0%} 
+                            Submited to caretaker
+                            {%endif%}
+                            {% if complaints[7]==1%}
+                            Discarded By Hostel Authorities
+                            {%endif%}
+                            {% if complaints[7]==2%}
+                            Being handled by in-house employees
+                            {%endif%}
+                            {% if complaints[7]==3%}
+                            Being handled at CMS
+                            {%endif%}
+                            {% if complaints[7]==4%}
+                            Alloted to *Insert name of worker*
+                            {%endif%}
+                            {% if complaints[7]==5%}
+                            Marked completed by Hostel Authorities
+                            {%endif%}
+                            {% if complaints[7]==6%}
+                            Complaint completion approved
+                            {%endif%}
+                            {% if complaints[7]==7%}
+                            Complaint completion auto approved
+                            {%endif%}
+                          </a>
+                        </td>
+                        
+                      </tr>
+                      <div class="modal fade" id='complaintsModal{{complaints[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Actions and Notifications</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <div data-spy="scroll">
+                                <h4 id="date">Date and Time of Lodging Complaint</h4>
+                                <p>{{complaints[6]}}</p>
+                                <h4 id="description">Complaint Description</h4>
+                                <p>{{complaints[4]}}</p>
+                                <h4 id="updates">Updates</h4>
+                                <p>{{complaints[8]}}</p>
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <form method="POST" action="{{url_for('main.studentCMS')}}">
+                                <label style="margin:auto;">
+                                  Do you want to delete this complaint?
+                                </label>
+                              <button type="submit" name="submit" class="btn deleteComplaint btn-danger" value="deleteComplaint:{{complaints[0]}}" >Delete Complaint</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  <div class="modal fade" id="complaintsModal" tabindex="-1" role="dialog"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Actions and Notifications</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          
+          <form method="POST" action="{{url_for('main.studentCMS')}}">
+            <label style="margin:auto;">
+              Do you want to delete this complaint?
+            </label>
+          <button type="submit" name="submit" class="btn deleteComplaint btn-danger" value="deleteComplaint" >Delete Complaint</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{{url_for('static', filename='dashboard/js/core/jquery.min.js')}}"></script>
+  
+  <script src="{{url_for('static', filename='dashboard/js/core/popper.min.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/core/bootstrap.min.js')}}"></script>
+  
+  <script src="{{url_for('static', filename='dashboard/js/plugins/perfect-scrollbar.jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/plugins/moment.min.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
+  
+
+  <!-- Chart JS -->
+  <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-switch.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/plugins/nouislider.min.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-datepicker.js')}}"></script>
+  <!--  Notifications Plugin    -->
+  <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-notify.js')}}"></script>
+  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{{url_for('static', filename='dashboard/js/now-ui-dashboard.min.js')}}" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
+  <script src="{{url_for('static', filename='dashboard/demo/demo.js')}}"></script>
+  <script src="{{url_for('static', filename='dashboard/js/core/main.js')}}"></script>
+  <script>
+    $('.datetimepicker1').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'DD-MM-YYYY'
+  });
+  $('.datetimepicker2').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'HH:MM'
+  });
+  $('.datetimepicker3').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'HH:MM'
+  });
+  $('.datetimepicker11').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'DD-MM-YYYY'
+  });
+  $('.datetimepicker22').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'HH:MM'
+  });
+  $('.datetimepicker33').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'HH:MM'
+  });
+  $('.datetimepicker111').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'DD-MM-YYYY'
+  });
+  $('.datetimepicker222').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'HH:MM'
+  });
+  $('.datetimepicker333').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      },
+      format: 'HH:MM'
+  });
+// $(document).on('click','#submit',function(){
+//   var value=$('.datetimepicker').val();
+//   window.location.href="./book_appointment?pres_id={{pres}}&doctor_id={{doctor}}&time="+value;
+// })
+  </script>
+ 
+</body>
+
+</html>

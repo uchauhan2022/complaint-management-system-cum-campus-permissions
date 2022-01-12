@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="{{url_for('static', filename='dashboard/img/apple-icon.png')}}">
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='dashboard/img/favicon.png')}}">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+    Dashboard
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+    name='viewport' />
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <!-- CSS Files -->
+  <link href="{{url_for('static', filename='dashboard/css/bootstrap.min.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename='dashboard/css/now-ui-dashboard.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename='dashboard/css/datetime.min.css')}}" rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css"
+    integrity="sha512-TQQ3J4WkE/rwojNFo6OJdyu6G8Xe9z8rMrlF9y7xpFbQfW5g8aSWcygCQ4vqRiJqFsDsE1T6MoAOMJkFXlrI9A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+    integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link href="{{url_for('static', filename='dashboard/demo/demo.css')}}" rel="stylesheet" />
+  <style>
+    .overlayx {
+      position: absolute;
+      bottom: 0;
+      background: rgb(0, 0, 0);
+      background: rgba(0, 0, 0, 0.603);
+      /* Black see-through */
+      color: #f1f1f1;
+      width: 100%;
+      transition: .5s ease;
+      opacity: 1;
+      color: white;
+      font-size: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .tabbable .nav-tabs {
+      overflow-x: auto;
+      overflow-y: hidden;
+      flex-wrap: nowrap;
+      display: flex;
+    }
+
+    @media screen and (max-width: 768px) {
+      .tabbable .nav-tabs {
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+    }
+
+    @media screen and (max-width: 430px) {
+      .tab-pane .table {
+        display: block;
+      }
+    }
+  </style>
+</head>
+
+<body class="">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="red">
+      <div class="logo">
+        <a href="" class="simple-text text-center">
+          Thapar University
+        </a>
+      </div>
+      <div class="sidebar-wrapper" id="sidebar-wrapper">
+        <ul class="nav">
+          <li class="active">
+            <a href="{{url_for('parent.permissions')}}">
+              <i class="far fa-address-card"></i>
+              <p>Permissions</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{url_for('main.userProfile')}}">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>User Profile</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel" id="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="#">Hello, {{user[0][2]}}!</a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+            aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end" id="navigation">
+
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="navbar-brand" href="{{url_for('parent.logout')}}">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <p>
+                    &nbsp;logout
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="panel-header panel-header-lg">
+        <h2 align="center" class="d-sm-block" style="color:white; margin-left: 2rem;">WELCOME TO CAMPUS PERMISSIONS PORTAL</h2>
+        <div class="container">
+          {% if appActivation == 0 %}
+          <div align="center" class="alert alert-warning" role="alert">
+            <div class="container">
+              <strong>Application is currently deactivated!</strong>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="content">
+        <div class="card" style="position:relative; height: 900px; overflow:auto; display:block;">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12">
+                <nav>
+                  <div class="tabbable">
+                    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#permissions-requested" role="tab" aria-controls="nav-home" aria-selected="true">Requested Permissions</a>
+                        <a class="nav-item nav-link " id="nav-profile-tab" data-toggle="tab" href="#permissions-active" role="tab" aria-controls="nav-profile" aria-selected="false">Active Permissions</a>
+                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#permissions-expired" role="tab" aria-controls="nav-contact" aria-selected="false">Expired Permissions</a>
+                    </div>
+                  </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="permissions-requested" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <table class="table" style="overflow:auto;" >
+                            <thead class="text-primary">
+                                <tr>
+                                  <th>
+                                    Permission Date
+                                  </th>
+                                  <th>
+                                    Out Time
+                                  </th>
+                                  <th>
+                                    In Time
+                                  </th>
+                                  <th>
+                                    Location
+                                  </th>
+                                  <th class="text-right">
+                                    Status
+                                  </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              {% for permission in requestedPermissionsList[::-1]  %}
+                              <tr>
+                                <td>
+                                  {{permission[1]}}
+                                </td>
+                                <td>
+                                  {{permission[2]}}
+                                </td>
+                                <td>
+                                  {{permission[3]}}
+                                </td>
+                                <td>
+                                  {{permission[5]}}
+                                  <div class="modal fade" id='permissionsModal{{permission[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalLongTitle">Details</h5>
+                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                        </div>
+                                        <div class="modal-body">
+                                          <div data-spy="scroll">
+                                            <nav>
+                                              <div class="tabbable">
+                                                <div class="nav nav-tabs nav-fill" id="nav-tab{{permission[0]}}" role="tablist">
+                                                    <a class="nav-item nav-link active" id="nav-home-tab{{permission[0]}}" data-toggle="tab" href="#description{{permission[0]}}" role="tab" aria-controls="nav-home" aria-selected="true">Description</a>
+                                                </div>
+                                              </div>
+                                            </nav>
+                                            <div class="tab-content" id="nav-tabContent{{permission[0]}}">
+                                              <div class="tab-pane fade show active" id="description{{permission[0]}}" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                <table class="table">
+                                                  <tbody>
+                                                    <tr>
+                                                      <td>Permission ID:</td>
+                                                      <td class="text-right">{{permission[0]}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>Permission Date:</td>
+                                                      <td class="text-right">{{permission[1]}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>Permission Out Time:</td>
+                                                      <td class="text-right">{{permission[2]}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>Permission In Time:</td>
+                                                      <td class="text-right">{{permission[3]}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>Reason:</td>
+                                                      <td class="text-right">{{permission[4]}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>Location:</td>
+                                                      <td class="text-right">{{permission[5]}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>Permission requested at:</td>
+                                                      <td class="text-right">{{permission[6]}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>Permission requested on:</td>
+                                                      <td class="text-right">{{permission[7]}}</td>
+                                                    </tr>
+                                                  </tbody>
+                                                </table>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <form method="POST" action="{{url_for('parent.permissions')}}">
+                                            <button type="submit" class="btn btn-success btn-small float-right" style="background-color: #b42020; margin-right: 5px;" name="submit" value="rejectPermission:{{permission[0]}}">Reject</button>
+                                            <button type="submit" class="btn btn-success btn-small float-right" style="background-color: #37ac54; margin-right: 5px;" name="submit" value="acceptPermission:{{permission[0]}}">Accept</button>
+                                          </form>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td class="text-right">  
+                                  <a href="#" data-target='#permissionsModal{{permission[0]}}' data-toggle="modal">
+                                    Permission Approval Pending
+                                  </a>
+                                </td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="permissions-active" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <table class="table" style="overflow:auto;" cellspacing="0">
+                          <thead class="text-primary">
+                            <tr>
+                              <th>
+                                Permission Date
+                              </th>
+                              <th>
+                                Out Time
+                              </th>
+                              <th>
+                                In Time
+                              </th>
+                              <th>
+                                Location
+                              </th>
+                              <th class="text-right">
+                                Status
+                              </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for permission in activePermissionsList[::-1]  %}
+                          {% if permission[6]==6 %}
+                          <tr style="background:lavenderblush">
+                          {% elif permission[6]==7 %}
+                          <tr style="background:rgb(231, 214, 192)">
+                          {% else %}
+                          <tr>
+                          {% endif %}
+                            <td>
+                              {{permission[1]}}
+                            </td>
+                            <td>
+                              {{permission[2]}}
+                            </td>
+                            <td>
+                              {{permission[3]}}
+                            </td>
+                            <td>
+                              {{permission[5]}}
+                              <div class="modal fade" id='permissionsModal{{permission[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLongTitle">Details</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div data-spy="scroll">
+                                        <nav>
+                                          <div class="tabbable">
+                                            <div class="nav nav-tabs nav-fill" id="nav-tab{{permission[0]}}" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab{{permission[0]}}" data-toggle="tab" href="#description{{permission[0]}}" role="tab" aria-controls="nav-home" aria-selected="true">Description</a>
+                                            </div>
+                                          </div>
+                                        </nav>
+                                        <div class="tab-content" id="nav-tabContent{{permission[0]}}">
+                                          <div class="tab-pane fade show active" id="description{{permission[0]}}" role="tabpanel" aria-labelledby="nav-home-tab">
+                                            <table class="table">
+                                              <tbody>
+                                                <tr>
+                                                  <td>Permission ID:</td>
+                                                  <td class="text-right">{{permission[0]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Permission Date:</td>
+                                                  <td class="text-right">{{permission[1]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Permission Out Time:</td>
+                                                  <td class="text-right">{{permission[2]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Permission In Time:</td>
+                                                  <td class="text-right">{{permission[3]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Reason:</td>
+                                                  <td class="text-right">{{permission[4]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Location:</td>
+                                                  <td class="text-right">{{permission[5]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Permission requested at:</td>
+                                                  <td class="text-right">{{permission[7]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Permission requested on (Date):</td>
+                                                  <td class="text-right">{{permission[8]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Permission approved at:</td>
+                                                  <td class="text-right">{{permission[9]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Permission approved on (Date):</td>
+                                                  <td class="text-right">{{permission[10]}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Left campus at:</td>
+                                                  <td class="text-right">{{permission[11]}}</td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td class="text-right">  
+                              <a href="#" data-target='#permissionsModal{{permission[0]}}' data-toggle="modal">
+                                {% if permission[6]==1%} 
+                                  Approved by parent
+                                {%endif%}
+                                {% if permission[6]==3%} 
+                                  Exited the campus
+                                {%endif%}
+                                {% if permission[6]==4%} 
+                                  In time exceeded
+                                {%endif%}
+                              </a>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="tab-pane fade" id="permissions-expired" role="tabpanel" aria-labelledby="nav-profile-tab">
+                      <table class="table" style="overflow:auto;" cellspacing="0">
+                        <thead class="text-primary">
+                          <tr>
+                            <th>
+                              Permission Date
+                            </th>
+                            <th>
+                              Out Time
+                            </th>
+                            <th>
+                              In Time
+                            </th>
+                            <th>
+                              Location
+                            </th>
+                            <th class="text-right">
+                              Status
+                            </th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        {% for permission in expiredPermissionsList[::-1]  %}
+                        <tr>
+                          <td>
+                            {{permission[1]}}
+                          </td>
+                          <td>
+                            {{permission[2]}}
+                          </td>
+                          <td>
+                            {{permission[3]}}
+                          </td>
+                          <td>
+                            {{permission[5]}}
+                            <div class="modal fade" id='permissionsModal{{permission[0]}}' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div data-spy="scroll">
+                                      <nav>
+                                        <div class="tabbable">
+                                          <div class="nav nav-tabs nav-fill" id="nav-tab{{permission[0]}}" role="tablist">
+                                              <a class="nav-item nav-link active" id="nav-home-tab{{permission[0]}}" data-toggle="tab" href="#description{{permission[0]}}" role="tab" aria-controls="nav-home" aria-selected="true">Description</a>
+                                          </div>
+                                        </div>
+                                      </nav>
+                                      <div class="tab-content" id="nav-tabContent{{permission[0]}}">
+                                        <div class="tab-pane fade show active" id="description{{permission[0]}}" role="tabpanel" aria-labelledby="nav-home-tab">
+                                          <table class="table">
+                                            <tbody>
+                                              <tr>
+                                                <td>Permission ID:</td>
+                                                <td class="text-right">{{permission[0]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Permission Date:</td>
+                                                <td class="text-right">{{permission[1]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Permission Out Time:</td>
+                                                <td class="text-right">{{permission[2]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Permission In Time:</td>
+                                                <td class="text-right">{{permission[3]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Reason:</td>
+                                                <td class="text-right">{{permission[4]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Location:</td>
+                                                <td class="text-right">{{permission[5]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Permission requested at:</td>
+                                                <td class="text-right">{{permission[7]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Permission requested on (Date):</td>
+                                                <td class="text-right">{{permission[8]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Permission approved at:</td>
+                                                <td class="text-right">{{permission[9]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Permission approved on (Date):</td>
+                                                <td class="text-right">{{permission[10]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Left campus at:</td>
+                                                <td class="text-right">{{permission[12]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Returned to campus at:</td>
+                                                <td class="text-right">{{permission[11]}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td>Returned to campus at:</td>
+                                                <td class="text-right">{{permission[11]}}</td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="text-right">  
+                            <a href="#" data-target='#permissionsModal{{permission[0]}}' data-toggle="modal">
+                              {% if permission[6]==2%} 
+                                Rejected by parent
+                              {%endif%}
+                              {% if permission[6]==5%} 
+                                Was back in time
+                              {%endif%}
+                              {% if permission[6]==6%} 
+                                Late entry
+                              {%endif%}
+                              {% if permission[6]==7%} 
+                                No return entry
+                              {%endif%}
+                            </a>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--   Core JS Files   -->
+      <script src="{{url_for('static', filename='dashboard/js/core/jquery.min.js')}}"></script>
+
+      <script src="{{url_for('static', filename='dashboard/js/core/popper.min.js')}}"></script>
+      <script src="{{url_for('static', filename='dashboard/js/core/bootstrap.min.js')}}"></script>
+
+      <script src="{{url_for('static', filename='dashboard/js/plugins/perfect-scrollbar.jquery.min.js')}}"></script>
+      <script src="{{url_for('static', filename='dashboard/js/plugins/moment.min.js')}}"
+        type="text/javascript"></script>
+      <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-datetimepicker.min.js')}}"
+        type="text/javascript"></script>
+
+
+      <!-- Chart JS -->
+      <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-switch.js')}}"></script>
+      <script src="{{url_for('static', filename='dashboard/js/plugins/nouislider.min.js')}}"></script>
+      <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-datepicker.js')}}"></script>
+      <!--  Notifications Plugin    -->
+      <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-notify.js')}}"></script>
+      <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+      <script src="{{url_for('static', filename='dashboard/js/now-ui-dashboard.min.js')}}"
+        type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
+      <script src="{{url_for('static', filename='dashboard/demo/demo.js')}}"></script>
+      <script src="{{url_for('static', filename='dashboard/js/core/main.js')}}"></script>
+      <script>
+        $('.datetimepicker1').datetimepicker({
+          icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-chevron-up",
+            down: "fa fa-chevron-down",
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-screenshot',
+            clear: 'fa fa-trash',
+            close: 'fa fa-remove'
+          },
+          format: 'DD-MM-YYYY',
+        });
+        $('.datetimepicker2').datetimepicker({
+          icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-chevron-up",
+            down: "fa fa-chevron-down",
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-screenshot',
+            clear: 'fa fa-trash',
+            close: 'fa fa-remove'
+          },
+          format: 'HH:mm',
+        });
+        $('.datetimepicker3').datetimepicker({
+          icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-chevron-up",
+            down: "fa fa-chevron-down",
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right',
+            today: 'fa fa-screenshot',
+            clear: 'fa fa-trash',
+            close: 'fa fa-remove'
+          },
+          format: 'HH:mm',
+        });
+      </script>
+
+</body>
+
+</html>
